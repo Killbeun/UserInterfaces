@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Барбершоп — Справочники и классификаторы</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* === CSS-переменные === */
+        :root {
+            --bg: #0f0f0f;
+            --bg-elevated: #1a1a1a;
+            --bg-card: #222222;
+            --bg-card-hover: #2a2a2a;
+            --fg: #f0e6d6;
+            --fg-muted: #8a8070;
+            --fg-dim: #5a5448;
+            --accent: #c8913a;
+            --accent-hover: #daa04e;
+            --accent-dim: rgba(200, 145, 58, 0.15);
+            --danger: #c0392b;
+            --danger-hover: #e74c3c;
+            --success: #27ae60;
+            --success-dim: rgba(39, 174, 96, 0.15);
+            --border: #333333;
+            --border-light: #444444;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 12px 48px rgba(0,0,0,0.6);
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* === Сброс и базовые стили === */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* === Фоновая атмосфера === */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(200,145,58,0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -150px;
+            left: -150px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(200,145,58,0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* === Хедер === */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15,15,15,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-weight: 900;
+            font-size: 22px;
+            color: var(--accent);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i { font-size: 20px; }
+        .header-info {
+            font-size: 13px;
+            color: var(--fg-muted);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .header-info span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* === Навигация по справочникам === */
+        .nav-bar {
+            position: sticky;
+            top: 64px;
+            z-index: 90;
+            background: rgba(26,26,26,0.9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .nav-bar::-webkit-scrollbar { display: none; }
+        .nav-tab {
+            padding: 14px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--fg-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            white-space: nowrap;
+            transition: color var(--transition);
+        }
+        .nav-tab:hover { color: var(--fg); }
+        .nav-tab.active {
+            color: var(--accent);
+        }
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 12px;
+            right: 12px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px 2px 0 0;
+        }
+        .nav-tab .tab-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            font-size: 11px;
+            font-weight: 700;
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        /* === Основной контент === */
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px;
+        }
+
+        /* === Секция справочника === */
+        .ref-section {
+            display: none;
+            animation: fadeSlideIn 0.35s ease-out;
+        }
+        .ref-section.active { display: block; }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === Заголовок справочника === */
+        .ref-header {
+            margin-bottom: 24px;
+        }
+        .ref-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--fg);
+            margin-bottom: 6px;
+        }
+        .ref-subtitle {
+            font-size: 14px;
+            color: var(--fg-muted);
+            line-height: 1.5;
+        }
+        .ref-type-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        .ref-type-badge.sprav { background: var(--accent-dim); color: var(--accent); }
+        .ref-type-badge.klass { background: var(--success-dim); color: var(--success); }
+
+        /* === Фрейм операций === */
+        .ops-frame {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+        .ops-frame-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--fg-dim);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ops-frame-title i { color: var(--accent); font-size: 13px; }
+
+        .ops-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .ops-group-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--fg-muted);
+            margin-right: 6px;
+            min-width: fit-content;
+        }
+        .ops-separator {
+            width: 1px;
+            height: 32px;
+            background: var(--border-light);
+            margin: 0 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn i { font-size: 12px; }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: white;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .btn:active::after { opacity: 0.1; }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0f0f0f;
+        }
+        .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--fg);
+        }
+        .btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--fg-dim); }
+
+        .btn-danger {
+            background: transparent;
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .btn-danger:hover { background: var(--danger); color: white; }
+
+        .btn-ghost {
+            background: transparent;
+            border-color: transparent;
+            color: var(--fg-muted);
+            padding: 9px 12px;
+        }
+        .btn-ghost:hover { color: var(--fg); background: var(--bg-card); }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        .btn-sm i { font-size: 11px; }
+
+        .btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* === Фрейм поиска/фильтра === */
+        .search-frame {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .search-input-wrap {
+            flex: 1;
+            position: relative;
+        }
+        .search-input-wrap i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--fg-dim);
+            font-size: 14px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 14px 10px 40px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--fg);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            outline: none;
+            transition: border-color var(--transition);
+        }
+        .search-input::placeholder { color: var(--fg-dim); }
+        .search-input:focus { border-color: var(--accent); }
+
+        /* === Фрейм формы списка (таблица) === */
+        .list-frame {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .list-frame-header {
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .list-frame-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--fg-dim);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .list-frame-title i { color: var(--accent); font-size: 13px; }
+        .list-count {
+            font-size: 12px;
+            color: var(--fg-muted);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table thead th {
+            padding: 12px 20px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--fg-dim);
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid var(--border);
+            user-select: none;
+            cursor: pointer;
+            transition: color var(--transition);
+        }
+        .data-table thead th:hover { color: var(--fg-muted); }
+        .data-table thead th .sort-icon { margin-left: 4px; font-size: 10px; }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background var(--transition);
+        }
+        .data-table tbody tr:last-child { border-bottom: none; }
+        .data-table tbody tr:hover { background: var(--bg-card); }
+        .data-table tbody tr.selected { background: var(--accent-dim); }
+
+        .data-table tbody td {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: var(--fg);
+            vertical-align: middle;
+        }
+        .data-table .col-id {
+            color: var(--fg-dim);
+            font-size: 13px;
+            font-weight: 600;
+            width: 60px;
+        }
+        .data-table .col-actions {
+            width: 140px;
+            text-align: right;
+        }
+        .data-table .col-actions .btn-sm { margin-left: 4px; }
+
+        .row-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        /* === Статус-бейджи === */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+        }
+        .status-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .status-booked { background: rgba(52, 152, 219, 0.15); color: #5dade2; }
+        .status-booked .dot { background: #5dade2; }
+        .status-done { background: var(--success-dim); color: var(--success); }
+        .status-done .dot { background: var(--success); }
+        .status-cancelled { background: rgba(192, 57, 43, 0.15); color: #e74c3c; }
+        .status-cancelled .dot { background: #e74c3c; }
+
+        .channel-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+        .channel-telegram { background: rgba(0,136,204,0.2); color: #0088cc; }
+        .channel-whatsapp { background: rgba(37,211,102,0.2); color: #25d366; }
+        .channel-vk { background: rgba(0,119,255,0.2); color: #0077ff; }
+        .channel-sms { background: rgba(200,145,58,0.2); color: var(--accent); }
+
+        /* === Модальное окно === */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            animation: modalOverlayIn 0.25s ease-out;
+        }
+        .modal-overlay.open { display: flex; }
+
+        @keyframes modalOverlayIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            width: 480px;
+            max-width: 92vw;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: var(--fg-muted);
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all var(--transition);
+        }
+        .modal-close:hover { background: var(--bg-card); color: var(--fg); }
+
+        .modal-body { padding: 20px 24px; }
+        .modal-footer {
+            padding: 16px 24px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--fg-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-input, .form-select {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--fg);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            outline: none;
+            transition: border-color var(--transition);
+        }
+        .form-input:focus, .form-select:focus { border-color: var(--accent); }
+        .form-select { cursor: pointer; }
+        .form-select option { background: var(--bg-card); color: var(--fg); }
+        .form-hint {
+            font-size: 12px;
+            color: var(--fg-dim);
+            margin-top: 4px;
+        }
+
+        /* === Тост-уведомления === */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 32px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .toast {
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--fg);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn 0.3s ease-out;
+            min-width: 280px;
+        }
+        .toast.toast-out { animation: toastOut 0.25s ease-in forwards; }
+        .toast-success i { color: var(--success); }
+        .toast-error i { color: var(--danger); }
+        .toast-info i { color: var(--accent); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(40px); }
+        }
+
+        /* === Подтверждение удаления === */
+        .confirm-text {
+            font-size: 14px;
+            color: var(--fg);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        .confirm-item {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* === Пустое состояние === */
+        .empty-state {
+            padding: 48px 24px;
+            text-align: center;
+            color: var(--fg-dim);
+        }
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+        .empty-state p { font-size: 14px; }
+
+        /* === Анимация строк === */
+        .data-table tbody tr {
+            animation: rowIn 0.3s ease-out backwards;
+        }
+
+        @keyframes rowIn {
+            from { opacity: 0; transform: translateX(-8px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* === Адаптивность === */
+        @media (max-width: 768px) {
+            header { padding: 0 16px; }
+            .nav-bar { padding: 0 16px; }
+            main { padding: 20px 16px; }
+            .ref-title { font-size: 22px; }
+            .ops-frame { padding: 16px; }
+            .ops-row { gap: 8px; }
+            .data-table thead th, .data-table tbody td { padding: 10px 12px; font-size: 13px; }
+            .btn { padding: 8px 14px; font-size: 12px; }
+            .modal { width: 95vw; }
+        }
+
+        /* === Скроллбар === */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--fg-dim); }
+
+        /* === Подсветка связанных справочников === */
+        .related-refs {
+            margin-top: 24px;
+            padding: 16px 20px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(200,145,58,0.25);
+            border-radius: var(--radius);
+        }
+        .related-refs-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .related-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent);
+            background: rgba(200,145,58,0.1);
+            border: 1px solid rgba(200,145,58,0.2);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--transition);
+            margin-right: 8px;
+            margin-bottom: 6px;
+            text-decoration: none;
+        }
+        .related-link:hover {
+            background: rgba(200,145,58,0.2);
+            border-color: var(--accent);
+        }
+
+        /* Фокус для доступности */
+        .btn:focus-visible, .nav-tab:focus-visible, .search-input:focus-visible,
+        .form-input:focus-visible, .form-select:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Хедер -->
+<header>
+    <div class="logo">
+        <i class="fa-solid fa-scissors"></i>
+        BARBER ADMIN
+    </div>
+    <div class="header-info">
+        <span><i class="fa-solid fa-user"></i> Менеджер</span>
+        <span><i class="fa-solid fa-clock"></i> <span id="clock"></span></span>
+    </div>
+</header>
+
+<!-- Навигация -->
+<nav class="nav-bar" role="tablist" aria-label="Справочники и классификаторы">
+    <button class="nav-tab active" role="tab" aria-selected="true" data-tab="services">
+        Услуги<span class="tab-badge" id="badge-services">5</span>
+    </button>
+    <button class="nav-tab" role="tab" aria-selected="false" data-tab="roles">
+        Роли сотрудников<span class="tab-badge" id="badge-roles">2</span>
+    </button>
+    <button class="nav-tab" role="tab" aria-selected="false" data-tab="statuses">
+        Статусы записей<span class="tab-badge" id="badge-statuses">3</span>
+    </button>
+    <button class="nav-tab" role="tab" aria-selected="false" data-tab="channels">
+        Каналы связи<span class="tab-badge" id="badge-channels">4</span>
+    </button>
+    <button class="nav-tab" role="tab" aria-selected="false" data-tab="master-services">
+        Услуги мастера<span class="tab-badge" id="badge-master-services">7</span>
+    </button>
+</nav>
+
+<!-- Тосты -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Основной контент -->
+<main>
+
+    <!-- ===================== 1. УСЛУГИ ===================== -->
+    <section class="ref-section active" id="sec-services" role="tabpanel">
+        <div class="ref-header">
+            <div class="ref-type-badge sprav">Справочник</div>
+            <h1 class="ref-title">Услуги</h1>
+            <p class="ref-subtitle">Хранит перечень услуг с ценой и длительностью. Каждая услуга имеет наименование, стоимость и время выполнения.</p>
+        </div>
+
+        <!-- Фрейм операций -->
+        <div class="ops-frame">
+            <div class="ops-frame-title"><i class="fa-solid fa-bolt"></i> Операции</div>
+            <div class="ops-row">
+                <span class="ops-group-label">Основные:</span>
+                <button class="btn btn-primary" onclick="openModal('services','add')"><i class="fa-solid fa-plus"></i> Добавить</button>
+                <button class="btn btn-secondary" id="btn-services-edit" disabled onclick="openModal('services','edit')"><i class="fa-solid fa-pen"></i> Изменить</button>
+                <button class="btn btn-danger" id="btn-services-delete" disabled onclick="confirmDelete('services')"><i class="fa-solid fa-trash"></i> Удалить</button>
+                <div class="ops-separator"></div>
+                <span class="ops-group-label">Обеспечивающие:</span>
+                <button class="btn btn-secondary" onclick="refreshData('services')"><i class="fa-solid fa-arrows-rotate"></i> Обновить</button>
+                <button class="btn btn-secondary" onclick="exportData('services')"><i class="fa-solid fa-file-export"></i> Экспорт</button>
+            </div>
+        </div>
+
+        <!-- Поиск -->
+        <div class="search-frame">
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input class="search-input" type="text" placeholder="Поиск по наименованию услуги..." oninput="filterTable('services', this.value)" aria-label="Поиск услуг">
+            </div>
+        </div>
+
+        <!-- Фрейм списка -->
+        <div class="list-frame">
+            <div class="list-frame-header">
+                <div class="list-frame-title"><i class="fa-solid fa-table-list"></i> Список услуг</div>
+                <div class="list-count" id="count-services">Записей: 5</div>
+            </div>
+            <table class="data-table" id="table-services">
+                <thead>
+                    <tr>
+                        <th style="width:40px"><input type="checkbox" class="row-checkbox" onchange="toggleAll('services', this.checked)" aria-label="Выбрать все"></th>
+                        <th style="width:60px">ID <i class="fa-solid fa-sort sort-icon"></i></th>
+                        <th>Наименование <i class="fa-solid fa-sort sort-icon"></i></th>
+                        <th>Цена, руб. <i class="fa-solid fa-sort sort-icon"></i></th>
+                        <th>Длительность, мин. <i class="fa-solid fa-sort sort-icon"></i></th>
+                        <th class="col-actions">Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-services"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===================== 2. РОЛИ СОТРУДНИКОВ ===================== -->
+    <section class="ref-section" id="sec-roles" role="tabpanel">
+        <div class="ref-header">
+            <div class="ref-type-badge klass">Классификатор</div>
+            <h1 class="ref-title">Роли сотрудников</h1>
+            <p class="ref-subtitle">Определяет роли сотрудников системы: Мастер, Менеджер. Используется при назначении прав доступа и формировании расписания.</p>
+        </div>
+        <div class="ops-frame">
+            <div class="ops-frame-title"><i class="fa-solid fa-bolt"></i> Операции</div>
+            <div class="ops-row">
+                <span class="ops-group-label">Основные:</span>
+                <button class="btn btn-primary" onclick="openModal('roles','add')"><i class="fa-solid fa-plus"></i> Добавить</button>
+                <button class="btn btn-secondary" id="btn-roles-edit" disabled onclick="openModal('roles','edit')"><i class="fa-solid fa-pen"></i> Изменить</button>
+                <button class="btn btn-danger" id="btn-roles-delete" disabled onclick="confirmDelete('roles')"><i class="fa-solid fa-trash"></i> Удалить</button>
+                <div class="ops-separator"></div>
+                <span class="ops-group-label">Обеспечивающие:</span>
+                <button class="btn btn-secondary" onclick="refreshData('roles')"><i class="fa-solid fa-arrows-rotate"></i> Обновить</button>
+            </div>
+        </div>
+        <div class="search-frame">
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input class="search-input" type="text" placeholder="Поиск по названию роли..." oninput="filterTable('roles', this.value)" aria-label="Поиск ролей">
+            </div>
+        </div>
+        <div class="list-frame">
+            <div class="list-frame-header">
+                <div class="list-frame-title"><i class="fa-solid fa-table-list"></i> Список ролей</div>
+                <div class="list-count" id="count-roles">Записей: 2</div>
+            </div>
+            <table class="data-table" id="table-roles">
+                <thead>
+                    <tr>
+                        <th style="width:40px"><input type="checkbox" class="row-checkbox" onchange="toggleAll('roles', this.checked)" aria-label="Выбрать все"></th>
+                        <th style="width:60px">ID</th>
+                        <th>Наименование роли</th>
+                        <th>Описание</th>
+                        <th class="col-actions">Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-roles"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===================== 3. СТАТУСЫ ЗАПИСЕЙ ===================== -->
+    <section class="ref-section" id="sec-statuses" role="tabpanel">
+        <div class="ref-header">
+            <div class="ref-type-badge klass">Классификатор</div>
+            <h1 class="ref-title">Статусы записей</h1>
+            <p class="ref-subtitle">Статусы жизненного цикла записи: Забронировано, Выполнено, Отменено. Определяют текущее состояние визита клиента.</p>
+        </div>
+        <div class="ops-frame">
+            <div class="ops-frame-title"><i class="fa-solid fa-bolt"></i> Операции</div>
+            <div class="ops-row">
+                <span class="ops-group-label">Основные:</span>
+                <button class="btn btn-primary" onclick="openModal('statuses','add')"><i class="fa-solid fa-plus"></i> Добавить</button>
+                <button class="btn btn-secondary" id="btn-statuses-edit" disabled onclick="openModal('statuses','edit')"><i class="fa-solid fa-pen"></i> Изменить</button>
+                <button class="btn btn-danger" id="btn-statuses-delete" disabled onclick="confirmDelete('statuses')"><i class="fa-solid fa-trash"></i> Удалить</button>
+                <div class="ops-separator"></div>
+                <span class="ops-group-label">Обеспечивающие:</span>
+                <button class="btn btn-secondary" onclick="refreshData('statuses')"><i class="fa-solid fa-arrows-rotate"></i> Обновить</button>
+            </div>
+        </div>
+        <div class="search-frame">
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input class="search-input" type="text" placeholder="Поиск по статусу..." oninput="filterTable('statuses', this.value)" aria-label="Поиск статусов">
+            </div>
+        </div>
+        <div class="list-frame">
+            <div class="list-frame-header">
+                <div class="list-frame-title"><i class="fa-solid fa-table-list"></i> Список статусов</div>
+                <div class="list-count" id="count-statuses">Записей: 3</div>
+            </div>
+            <table class="data-table" id="table-statuses">
+                <thead>
+                    <tr>
+                        <th style="width:40px"><input type="checkbox" class="row-checkbox" onchange="toggleAll('statuses', this.checked)" aria-label="Выбрать все"></th>
+                        <th style="width:60px">ID</th>
+                        <th>Статус</th>
+                        <th>Описание</th>
+                        <th class="col-actions">Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-statuses"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===================== 4. КАНАЛЫ СВЯЗИ ===================== -->
+    <section class="ref-section" id="sec-channels" role="tabpanel">
+        <div class="ref-header">
+            <div class="ref-type-badge klass">Классификатор</div>
+            <h1 class="ref-title">Каналы связи</h1>
+            <p class="ref-subtitle">Способы уведомлений клиентов: Telegram, WhatsApp, VK, СМС. Клиент выбирает предпочтительный канал при записи или в профиле.</p>
+        </div>
+        <div class="ops-frame">
+            <div class="ops-frame-title"><i class="fa-solid fa-bolt"></i> Операции</div>
+            <div class="ops-row">
+                <span class="ops-group-label">Основные:</span>
+                <button class="btn btn-primary" onclick="openModal('channels','add')"><i class="fa-solid fa-plus"></i> Добавить</button>
+                <button class="btn btn-secondary" id="btn-channels-edit" disabled onclick="openModal('channels','edit')"><i class="fa-solid fa-pen"></i> Изменить</button>
+                <button class="btn btn-danger" id="btn-channels-delete" disabled onclick="confirmDelete('channels')"><i class="fa-solid fa-trash"></i> Удалить</button>
+                <div class="ops-separator"></div>
+                <span class="ops-group-label">Обеспечивающие:</span>
+                <button class="btn btn-secondary" onclick="refreshData('channels')"><i class="fa-solid fa-arrows-rotate"></i> Обновить</button>
+            </div>
+        </div>
+        <div class="search-frame">
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input class="search-input" type="text" placeholder="Поиск по каналу связи..." oninput="filterTable('channels', this.value)" aria-label="Поиск каналов">
+            </div>
+        </div>
+        <div class="list-frame">
+            <div class="list-frame-header">
+                <div class="list-frame-title"><i class="fa-solid fa-table-list"></i> Список каналов связи</div>
+                <div class="list-count" id="count-channels">Записей: 4</div>
+            </div>
+            <table class="data-table" id="table-channels">
+                <thead>
+                    <tr>
+                        <th style="width:40px"><input type="checkbox" class="row-checkbox" onchange="toggleAll('channels', this.checked)" aria-label="Выбрать все"></th>
+                        <th style="width:60px">ID</th>
+                        <th>Канал</th>
+                        <th>Код</th>
+                        <th>Описание</th>
+                        <th class="col-actions">Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-channels"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===================== 5. УСЛУГИ МАСТЕРА ===================== -->
+    <section class="ref-section" id="sec-master-services" role="tabpanel">
+        <div class="ref-header">
+            <div class="ref-type-badge sprav">Справочник</div>
+            <h1 class="ref-title">Услуги мастера</h1>
+            <p class="ref-subtitle">Связывает мастера с услугами, которые он оказывает. Определяет, какие услуги доступны для выбора клиенту при записи к конкретному мастеру.</p>
+        </div>
+        <div class="ops-frame">
+            <div class="ops-frame-title"><i class="fa-solid fa-bolt"></i> Операции</div>
+            <div class="ops-row">
+                <span class="ops-group-label">Основные:</span>
+                <button class="btn btn-primary" onclick="openModal('master-services','add')"><i class="fa-solid fa-plus"></i> Добавить</button>
+                <button class="btn btn-secondary" id="btn-master-services-edit" disabled onclick="openModal('master-services','edit')"><i class="fa-solid fa-pen"></i> Изменить</button>
+                <button class="btn btn-danger" id="btn-master-services-delete" disabled onclick="confirmDelete('master-services')"><i class="fa-solid fa-trash"></i> Удалить</button>
+                <div class="ops-separator"></div>
+                <span class="ops-group-label">Обеспечивающие:</span>
+                <button class="btn btn-secondary" onclick="refreshData('master-services')"><i class="fa-solid fa-arrows-rotate"></i> Обновить</button>
+                <button class="btn btn-secondary" onclick="exportData('master-services')"><i class="fa-solid fa-file-export"></i> Экспорт</button>
+            </div>
+        </div>
+        <div class="search-frame">
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input class="search-input" type="text" placeholder="Поиск по мастеру или услуге..." oninput="filterTable('master-services', this.value)" aria-label="Поиск услуг мастера">
+            </div>
+        </div>
+        <div class="list-frame">
+            <div class="list-frame-header">
+                <div class="list-frame-title"><i class="fa-solid fa-table-list"></i> Связи мастер — услуга</div>
+                <div class="list-count" id="count-master-services">Записей: 7</div>
+            </div>
+            <table class="data-table" id="table-master-services">
+                <thead>
+                    <tr>
+                        <th style="width:40px"><input type="checkbox" class="row-checkbox" onchange="toggleAll('master-services', this.checked)" aria-label="Выбрать все"></th>
+                        <th style="width:60px">ID</th>
+                        <th>Мастер</th>
+                        <th>Услуга</th>
+                        <th>Цена, руб.</th>
+                        <th class="col-actions">Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-master-services"></tbody>
+            </table>
+        </div>
+        <!-- Связанные справочники -->
+        <div class="related-refs">
+            <div class="related-refs-title"><i class="fa-solid fa-link"></i> Связанные справочники</div>
+            <a class="related-link" onclick="switchTab('services')"><i class="fa-solid fa-arrow-right"></i> Услуги</a>
+            <a class="related-link" onclick="switchTab('roles')"><i class="fa-solid fa-arrow-right"></i> Роли сотрудников</a>
+        </div>
+    </section>
+
+</main>
+
+<!-- Модальное окно -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal" role="dialog" aria-modal="true">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modalTitle">Заголовок</h2>
+            <button class="modal-close" onclick="closeModal()" aria-label="Закрыть"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-footer" id="modalFooter"></div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // ДАННЫЕ — исходные наборы для каждого справочника/классификатора
+    // ============================================================
+    const dataSets = {
+        services: [
+            { id: 1, name: 'Стрижка мужская', price: 1500, duration: 60 },
+            { id: 2, name: 'Стрижка бороды', price: 800, duration: 30 },
+            { id: 3, name: 'Королевское бритье', price: 1200, duration: 45 },
+            { id: 4, name: 'Оформление бровей', price: 400, duration: 15 },
+            { id: 5, name: 'Стрижка + борода (комплекс)', price: 2000, duration: 90 }
+        ],
+        roles: [
+            { id: 1, name: 'Мастер', desc: 'Оказывает услуги клиентам, просматривает расписание и отзывы' },
+            { id: 2, name: 'Менеджер', desc: 'Ведёт расписание, регистрирует клиентов, фиксирует оплату, формирует отчёты' }
+        ],
+        statuses: [
+            { id: 1, name: 'Забронировано', desc: 'Клиент забронировал слот, визит ожидается', cssClass: 'status-booked' },
+            { id: 2, name: 'Выполнено', desc: 'Услуга оказана, менеджер проставил отметку', cssClass: 'status-done' },
+            { id: 3, name: 'Отменено', desc: 'Визит отменён клиентом или менеджером', cssClass: 'status-cancelled' }
+        ],
+        channels: [
+            { id: 1, name: 'Telegram', code: 'TG', desc: 'Уведомления через Telegram-бота', icon: 'fa-brands fa-telegram', iconClass: 'channel-telegram' },
+            { id: 2, name: 'WhatsApp', code: 'WA', desc: 'Уведомления через WhatsApp', icon: 'fa-brands fa-whatsapp', iconClass: 'channel-whatsapp' },
+            { id: 3, name: 'VK', code: 'VK', desc: 'Уведомления через сообщения ВКонтакте', icon: 'fa-brands fa-vk', iconClass: 'channel-vk' },
+            { id: 4, name: 'СМС', code: 'SMS', desc: 'Уведомления через SMS на номер телефона', icon: 'fa-solid fa-comment-sms', iconClass: 'channel-sms' }
+        ],
+        'master-services': [
+            { id: 1, master: 'Алексеев Дмитрий', service: 'Стрижка мужская', price: 1500 },
+            { id: 2, master: 'Алексеев Дмитрий', service: 'Стрижка бороды', price: 800 },
+            { id: 3, master: 'Алексеев Дмитрий', service: 'Королевское бритье', price: 1200 },
+            { id: 4, master: 'Петров Артём', service: 'Стрижка мужская', price: 1800 },
+            { id: 5, master: 'Петров Артём', service: 'Стрижка + борода (комплекс)', price: 2500 },
+            { id: 6, master: 'Сидоров Максим', service: 'Оформление бровей', price: 400 },
+            { id: 7, master: 'Сидоров Максим', service: 'Стрижка бороды', price: 900 }
+        ]
+    };
+
+    // Глубокая копия для рабочей области
+    const data = {};
+    for (const key in dataSets) {
+        data[key] = JSON.parse(JSON.stringify(dataSets[key]));
+    }
+
+    // Состояние выделенных строк
+    const selected = {};
+    for (const key in data) {
+        selected[key] = new Set();
+    }
+
+    // Следующий ID для новых записей
+    const nextId = {};
+    for (const key in data) {
+        nextId[key] = Math.max(...data[key].map(d => d.id), 0) + 1;
+    }
+
+    // Список мастеров для выпадающего списка (имитация справочника «Сотрудники» с ролью «Мастер»)
+    const mastersList = ['Алексеев Дмитрий', 'Петров Артём', 'Сидоров Максим', 'Козлов Игорь'];
+
+    // ============================================================
+    // РЕНДЕРИНГ ТАБЛИЦ
+    // ============================================================
+
+    function renderTable(key) {
+        const tbody = document.getElementById('tbody-' + key);
+        const items = data[key];
+
+        if (items.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><i class="fa-solid fa-inbox"></i><p>Нет данных для отображения</p></div></td></tr>`;
+            updateCounts(key);
+            return;
+        }
+
+        let html = '';
+        items.forEach((item, idx) => {
+            const isSelected = selected[key].has(item.id);
+            const rowClass = isSelected ? 'selected' : '';
+            const delay = idx * 0.04;
+
+            if (key === 'services') {
+                html += `<tr class="${rowClass}" style="animation-delay:${delay}s" data-id="${item.id}">
+                    <td><input type="checkbox" class="row-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleRow('${key}', ${item.id}, this.checked)" aria-label="Выбрать запись ${item.id}"></td>
+                    <td class="col-id">${item.id}</td>
+                    <td><strong>${esc(item.name)}</strong></td>
+                    <td>${item.price.toLocaleString('ru-RU')}</td>
+                    <td>${item.duration}</td>
+                    <td class="col-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openModal('${key}','edit',${item.id})" title="Изменить"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('${key}',${item.id})" title="Удалить"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            } else if (key === 'roles') {
+                html += `<tr class="${rowClass}" style="animation-delay:${delay}s" data-id="${item.id}">
+                    <td><input type="checkbox" class="row-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleRow('${key}', ${item.id}, this.checked)" aria-label="Выбрать запись ${item.id}"></td>
+                    <td class="col-id">${item.id}</td>
+                    <td><strong>${esc(item.name)}</strong></td>
+                    <td style="color:var(--fg-muted);font-size:13px">${esc(item.desc)}</td>
+                    <td class="col-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openModal('${key}','edit',${item.id})" title="Изменить"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('${key}',${item.id})" title="Удалить"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            } else if (key === 'statuses') {
+                html += `<tr class="${rowClass}" style="animation-delay:${delay}s" data-id="${item.id}">
+                    <td><input type="checkbox" class="row-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleRow('${key}', ${item.id}, this.checked)" aria-label="Выбрать запись ${item.id}"></td>
+                    <td class="col-id">${item.id}</td>
+                    <td><span class="status-badge ${item.cssClass}"><span class="dot"></span>${esc(item.name)}</span></td>
+                    <td style="color:var(--fg-muted);font-size:13px">${esc(item.desc)}</td>
+                    <td class="col-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openModal('${key}','edit',${item.id})" title="Изменить"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('${key}',${item.id})" title="Удалить"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            } else if (key === 'channels') {
+                html += `<tr class="${rowClass}" style="animation-delay:${delay}s" data-id="${item.id}">
+                    <td><input type="checkbox" class="row-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleRow('${key}', ${item.id}, this.checked)" aria-label="Выбрать запись ${item.id}"></td>
+                    <td class="col-id">${item.id}</td>
+                    <td><span class="channel-icon ${item.iconClass}"><i class="${item.icon}"></i></span><strong>${esc(item.name)}</strong></td>
+                    <td><code style="color:var(--accent);font-size:13px">${esc(item.code)}</code></td>
+                    <td style="color:var(--fg-muted);font-size:13px">${esc(item.desc)}</td>
+                    <td class="col-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openModal('${key}','edit',${item.id})" title="Изменить"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('${key}',${item.id})" title="Удалить"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            } else if (key === 'master-services') {
+                html += `<tr class="${rowClass}" style="animation-delay:${delay}s" data-id="${item.id}">
+                    <td><input type="checkbox" class="row-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleRow('${key}', ${item.id}, this.checked)" aria-label="Выбрать запись ${item.id}"></td>
+                    <td class="col-id">${item.id}</td>
+                    <td><i class="fa-solid fa-user" style="color:var(--accent);margin-right:6px;font-size:12px"></i>${esc(item.master)}</td>
+                    <td>${esc(item.service)}</td>
+                    <td>${item.price.toLocaleString('ru-RU')}</td>
+                    <td class="col-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="openModal('${key}','edit',${item.id})" title="Изменить"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('${key}',${item.id})" title="Удалить"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            }
+        });
+        tbody.innerHTML = html;
+        updateCounts(key);
+        updateButtons(key);
+    }
+
+    // ============================================================
+    // ВЫДЕЛЕНИЕ СТРОК
+    // ============================================================
+
+    function toggleRow(key, id, checked) {
+        if (checked) {
+            selected[key].add(id);
+        } else {
+            selected[key].delete(id);
+        }
+        // Обновить класс строки
+        const row = document.querySelector(`#tbody-${key} tr[data-id="${id}"]`);
+        if (row) row.classList.toggle('selected', checked);
+        updateButtons(key);
+    }
+
+    function toggleAll(key, checked) {
+        selected[key].clear();
+        if (checked) {
+            data[key].forEach(item => selected[key].add(item.id));
+        }
+        renderTable(key);
+    }
+
+    function updateButtons(key) {
+        const hasSelection = selected[key].size > 0;
+        const singleSelection = selected[key].size === 1;
+        const editBtn = document.getElementById(`btn-${key}-edit`);
+        const deleteBtn = document.getElementById(`btn-${key}-delete`);
+        if (editBtn) editBtn.disabled = !(singleSelection);
+        if (deleteBtn) deleteBtn.disabled = !(hasSelection);
+    }
+
+    function updateCounts(key) {
+        const el = document.getElementById('count-' + key);
+        if (el) el.textContent = 'Записей: ' + data[key].length;
+        const badge = document.getElementById('badge-' + key);
+        if (badge) badge.textContent = data[key].length;
+    }
+
+    // ============================================================
+    // ПОИСК / ФИЛЬТРАЦИЯ
+    // ============================================================
+
+    function filterTable(key, query) {
+        const q = query.toLowerCase().trim();
+        const rows = document.querySelectorAll(`#tbody-${key} tr[data-id]`);
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(q) ? '' : 'none';
+        });
+    }
+
+    // ============================================================
+    // МОДАЛЬНЫЕ ОКНА — формы добавления/редактирования
+    // ============================================================
+
+    function openModal(key, mode, itemId) {
+        const overlay = document.getElementById('modalOverlay');
+        const title = document.getElementById('modalTitle');
+        const body = document.getElementById('modalBody');
+        const footer = document.getElementById('modalFooter');
+
+        let item = null;
+        if (mode === 'edit') {
+            item = data[key].find(d => d.id === itemId);
+            if (!item) return;
+        }
+
+        // Формируем заголовок
+        const labels = {
+            services: 'услуги',
+            roles: 'роли',
+            statuses: 'статуса',
+            channels: 'канала связи',
+            'master-services': 'связи мастер — услуга'
+        };
+        title.textContent = mode === 'add' ? `Добавление ${labels[key]}` : `Редактирование ${labels[key]}`;
+
+        // Формируем тело формы
+        let formHtml = '';
+        if (key === 'services') {
+            formHtml = `
+                <div class="form-group">
+                    <label class="form-label" for="f-name">Наименование услуги</label>
+                    <input class="form-input" id="f-name" type="text" value="${mode === 'edit' ? esc(item.name) : ''}" placeholder="Например: Стрижка мужская">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="f-price">Цена, руб.</label>
+                    <input class="form-input" id="f-price" type="number" min="0" step="100" value="${mode === 'edit' ? item.price : ''}" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="f-duration">Длительность, мин.</label>
+                    <input class="form-input" id="f-duration" type="number" min="5" step="5" value="${mode === 'edit' ? item.duration : ''}" placeholder="30">
+                    <div class="form-hint">Минимальный слот — 15 минут, кратность 5 минут</div>
+                </div>`;
+        } else if (key === 'roles') {
+            formHtml = `
+                <div class="form-group">
+                    <label class="form-label" for="f-name">Наименование роли</label>
+                    <input class="form-input" id="f-name" type="text" value="${mode === 'edit' ? esc(item.name) : ''}" placeholder="Например: Мастер">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="f-desc">Описание</label>
+                    <input class="form-input" id="f-desc" type="text" value="${mode === 'edit' ? esc(item.desc) : ''}" placeholder="Краткое описание роли">
+                </div>`;
+        } else if (key === 'statuses') {
+            formHtml = `
+                <div class="form-group">
+                    <label class="form-label" for="f-name">Наименование статуса</label>
+                    <input class="form-input" id="f-name" type="text" value="${mode === 'edit' ? esc(item.name) : ''}" placeholder="Например: Забронировано">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="f-desc">Описание</label>
+                    <input class="form-input" id="f-desc" type="text" value="${mode === 'edit' ? esc(item.desc) : ''}" placeholder="Описание статуса">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="f-css">Стиль отображения</label>
+                    <select class="form-select" id="f-css">
+                        <option value="status-booked" ${mode === 'edit' && item.cssClass === 'status-booked' ? 'selected' : ''}>Синий (забронировано)</option>
+                        <option value="status-done" ${mode === 'edit' && item.cssClass === 'status-done' ? 'selected' : ''}>Зелёный (выполнено)</option>
+                        <option value="status-cancelled" ${mode === 'edit' && item.cssClass === 'status-cancelled' ? 'selected' : ''}>Красный (отменено)</option>
+                    </select>
+                </div>`;
+        } else if (key === 'channels') {
+            formHtml = `
+                <div class="form-group">
+                    <label class="form-label" for="f-name">Наименование канала</label>
+                    <input class="form-input" id="f-name" type="text" value="${mode === 'edit' ? esc(item.name) : ''}" placeholder="Например: Telegram">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="f-code">Код канала</label>
+                    <input class="form-input" id="f-code" type="text" maxlength="5" value="${mode === 'edit' ? esc(item.code) : ''}" placeholder="TG">
+                    <div class="form-hint">Краткий буквенный код (до 5 символов)</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="f-desc">Описание</label>
+                    <input class="form-input" id="f-desc" type="text" value="${mode === 'edit' ? esc(item.desc) : ''}" placeholder="Описание канала уведомлений">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="f-icon">Иконка</label>
+                    <select class="form-select" id="f-icon">
+                        <option value="fa-brands fa-telegram|channel-telegram" ${mode === 'edit' && item.icon.includes('telegram') ? 'selected' : ''}>Telegram</option>
+                        <option value="fa-brands fa-whatsapp|channel-whatsapp" ${mode === 'edit' && item.icon.includes('whatsapp') ? 'selected' : ''}>WhatsApp</option>
+                        <option value="fa-brands fa-vk|channel-vk" ${mode === 'edit' && item.icon.includes('vk') ? 'selected' : ''}>VK</option>
+                        <option value="fa-solid fa-comment-sms|channel-sms" ${mode === 'edit' && item.icon.includes('sms') ? 'selected' : ''}>SMS</option>
+                    </select>
+                </div>`;
+        } else if (key === 'master-services') {
+            const servicesOptions = data.services.map(s =>
+                `<option value="${esc(s.name)}" ${mode === 'edit' && item.service === s.name ? 'selected' : ''}>${esc(s.name)} (${s.price} руб.)</option>`
+            ).join('');
+            const mastersOptions = mastersList.map(m =>
+                `<option value="${esc(m)}" ${mode === 'edit' && item.master === m ? 'selected' : ''}>${esc(m)}</option>`
+            ).join('');
+            formHtml = `
+                <div class="form-group">
+                    <label class="form-label" for="f-master">Мастер</label>
+                    <select class="form-select" id="f-master">
+                        <option value="">— Выберите мастера —</option>
+                        ${mastersOptions}
+                    </select>
+                    <div class="form-hint">Сотрудники с ролью «Мастер» из справочника «Роли сотрудников»</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="f-service">Услуга</label>
+                    <select class="form-select" id="f-service">
+                        <option value="">— Выберите услугу —</option>
+                        ${servicesOptions}
+                    </select>
+                    <div class="form-hint">Из справочника «Услуги»</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="f-price">Цена, руб.</label>
+                    <input class="form-input" id="f-price" type="number" min="0" step="100" value="${mode === 'edit' ? item.price : ''}" placeholder="0">
+                    <div class="form-hint">Можно отличать от базовой цены в справочнике услуг</div>
+                </div>`;
+        }
+
+        body.innerHTML = formHtml;
+
+        // Футер с кнопками
+        footer.innerHTML = `
+            <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
+            <button class="btn btn-primary" onclick="saveItem('${key}','${mode}', ${mode === 'edit' ? itemId : 'null'})">
+                <i class="fa-solid fa-check"></i> ${mode === 'add' ? 'Добавить' : 'Сохранить'}
+            </button>`;
+
+        overlay.classList.add('open');
+        // Фокус на первое поле
+        setTimeout(() => {
+            const firstInput = body.querySelector('.form-input, .form-select');
+            if (firstInput) firstInput.focus();
+        }, 100);
+    }
+
+    // ============================================================
+    // СОХРАНЕНИЕ
+    // ============================================================
+
+    function saveItem(key, mode, itemId) {
+        if (key === 'services') {
+            const name = document.getElementById('f-name').value.trim();
+            const price = parseInt(document.getElementById('f-price').value);
+            const duration = parseInt(document.getElementById('f-duration').value);
+            if (!name) { showToast('Укажите наименование услуги', 'error'); return; }
+            if (isNaN(price) || price < 0) { showToast('Укажите корректную цену', 'error'); return; }
+            if (isNaN(duration) || duration < 5) { showToast('Длительность должна быть не менее 5 минут', 'error'); return; }
+            if (mode === 'add') {
+                data[key].push({ id: nextId[key]++, name, price, duration });
+                showToast(`Услуга «${name}» добавлена`, 'success');
+            } else {
+                const item = data[key].find(d => d.id === itemId);
+                if (item) { item.name = name; item.price = price; item.duration = duration; }
+                showToast(`Услуга «${name}» обновлена`, 'success');
+            }
+        } else if (key === 'roles') {
+            const name = document.getElementById('f-name').value.trim();
+            const desc = document.getElementById('f-desc').value.trim();
+            if (!name) { showToast('Укажите наименование роли', 'error'); return; }
+            if (mode === 'add') {
+                data[key].push({ id: nextId[key]++, name, desc });
+                showToast(`Роль «${name}» добавлена`, 'success');
+            } else {
+                const item = data[key].find(d => d.id === itemId);
+                if (item) { item.name = name; item.desc = desc; }
+                showToast(`Роль «${name}» обновлена`, 'success');
+            }
+        } else if (key === 'statuses') {
+            const name = document.getElementById('f-name').value.trim();
+            const desc = document.getElementById('f-desc').value.trim();
+            const cssClass = document.getElementById('f-css').value;
+            if (!name) { showToast('Укажите наименование статуса', 'error'); return; }
+            if (mode === 'add') {
+                data[key].push({ id: nextId[key]++, name, desc, cssClass });
+                showToast(`Статус «${name}» добавлен`, 'success');
+            } else {
+                const item = data[key].find(d => d.id === itemId);
+                if (item) { item.name = name; item.desc = desc; item.cssClass = cssClass; }
+                showToast(`Статус «${name}» обновлён`, 'success');
+            }
+        } else if (key === 'channels') {
+            const name = document.getElementById('f-name').value.trim();
+            const code = document.getElementById('f-code').value.trim().toUpperCase();
+            const desc = document.getElementById('f-desc').value.trim();
+            const iconVal = document.getElementById('f-icon').value.split('|');
+            const icon = iconVal[0];
+            const iconClass = iconVal[1];
+            if (!name) { showToast('Укажите наименование канала', 'error'); return; }
+            if (!code) { showToast('Укажите код канала', 'error'); return; }
+            if (mode === 'add') {
+                data[key].push({ id: nextId[key]++, name, code, desc, icon, iconClass });
+                showToast(`Канал «${name}» добавлен`, 'success');
+            } else {
+                const item = data[key].find(d => d.id === itemId);
+                if (item) { item.name = name; item.code = code; item.desc = desc; item.icon = icon; item.iconClass = iconClass; }
+                showToast(`Канал «${name}» обновлён`, 'success');
+            }
+        } else if (key === 'master-services') {
+            const master = document.getElementById('f-master').value;
+            const service = document.getElementById('f-service').value;
+            const price = parseInt(document.getElementById('f-price').value);
+            if (!master) { showToast('Выберите мастера', 'error'); return; }
+            if (!service) { showToast('Выберите услугу', 'error'); return; }
+            if (isNaN(price) || price < 0) { showToast('Укажите корректную цену', 'error'); return; }
+            if (mode === 'add') {
+                data[key].push({ id: nextId[key]++, master, service, price });
+                showToast(`Связь «${master} — ${service}» добавлена`, 'success');
+            } else {
+                const item = data[key].find(d => d.id === itemId);
+                if (item) { item.master = master; item.service = service; item.price = price; }
+                showToast(`Связь обновлена`, 'success');
+            }
+        }
+
+        closeModal();
+        selected[key].clear();
+        renderTable(key);
+    }
+
+    // ============================================================
+    // ПОДТВЕРЖДЕНИЕ УДАЛЕНИЯ
+    // ============================================================
+
+    function confirmDelete(key, singleId) {
+        const overlay = document.getElementById('modalOverlay');
+        const title = document.getElementById('modalTitle');
+        const body = document.getElementById('modalBody');
+        const footer = document.getElementById('modalFooter');
+
+        const idsToDelete = singleId ? [singleId] : Array.from(selected[key]);
+
+        if (idsToDelete.length === 0) return;
+
+        title.textContent = 'Подтверждение удаления';
+        const labels = {
+            services: 'услуг',
+            roles: 'ролей',
+            statuses: 'статусов',
+            channels: 'каналов связи',
+            'master-services': 'связей'
+        };
+
+        let itemsHtml = '';
+        idsToDelete.forEach(id => {
+            const item = data[key].find(d => d.id === id);
+            if (item) {
+                const label = item.name || `${item.master} — ${item.service}`;
+                itemsHtml += `<span class="confirm-item">${esc(label)}</span> `;
+            }
+        });
+
+        body.innerHTML = `
+            <p class="confirm-text">Вы уверены, что хотите удалить ${idsToDelete.length === 1 ? '' : idsToDelete.length + ' '} ${labels[key]}?</p>
+            <div style="margin:12px 0">${itemsHtml}</div>
+            <p class="confirm-text" style="color:var(--fg-muted);font-size:13px">Действие необратимо.</p>`;
+
+        footer.innerHTML = `
+            <button class="btn btn-ghost" onclick="closeModal()">Отмена</button>
+            <button class="btn btn-danger" onclick="executeDelete('${key}', [${idsToDelete.join(',')}])">
+                <i class="fa-solid fa-trash"></i> Удалить
+            </button>`;
+
+        overlay.classList.add('open');
+    }
+
+    function executeDelete(key, ids) {
+        data[key] = data[key].filter(d => !ids.includes(d.id));
+        ids.forEach(id => selected[key].delete(id));
+        renderTable(key);
+        closeModal();
+        showToast(`Удалено записей: ${ids.length}`, 'info');
+    }
+
+    // ============================================================
+    // ОБЕСПЕЧИВАЮЩИЕ ОПЕРАЦИИ
+    // ============================================================
+
+    function refreshData(key) {
+        // Восстанавливаем исходные данные
+        data[key] = JSON.parse(JSON.stringify(dataSets[key]));
+        selected[key].clear();
+        renderTable(key);
+        showToast('Данные обновлены', 'info');
+    }
+
+    function exportData(key) {
+        // Имитация экспорта в CSV
+        const items = data[key];
+        if (items.length === 0) { showToast('Нет данных для экспорта', 'error'); return; }
+        const headers = Object.keys(items[0]);
+        let csv = headers.join(';') + '\n';
+        items.forEach(item => {
+            csv += headers.map(h => `"${item[h]}"`).join(';') + '\n';
+        });
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${key}_export.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast(`Экспорт выполнен: ${items.length} записей`, 'success');
+    }
+
+    // ============================================================
+    // НАВИГАЦИЯ
+    // ============================================================
+
+    const tabs = document.querySelectorAll('.nav-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            switchTab(tab.dataset.tab);
+        });
+    });
+
+    function switchTab(tabKey) {
+        tabs.forEach(t => {
+            t.classList.toggle('active', t.dataset.tab === tabKey);
+            t.setAttribute('aria-selected', t.dataset.tab === tabKey);
+        });
+        document.querySelectorAll('.ref-section').forEach(s => {
+            s.classList.toggle('active', s.id === 'sec-' + tabKey);
+        });
+    }
+
+    // ============================================================
+    // МОДАЛЬНОЕ ОКНО — управление
+    // ============================================================
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    function closeModalOnOverlay(e) {
+        if (e.target === e.currentTarget) closeModal();
+    }
+
+    // Закрытие по Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    // ============================================================
+    // ТОСТ-УВЕДОМЛЕНИЯ
+    // ============================================================
+
+    function showToast(message, type) {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        const icons = {
+            success: 'fa-solid fa-circle-check',
+            error: 'fa-solid fa-circle-xmark',
+            info: 'fa-solid fa-circle-info'
+        };
+        toast.className = `toast toast-${type || 'info'}`;
+        toast.innerHTML = `<i class="${icons[type] || icons.info}"></i> ${esc(message)}`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('toast-out');
+            setTimeout(() => toast.remove(), 250);
+        }, 3000);
+    }
+
+    // ============================================================
+    // УТИЛИТЫ
+    // ============================================================
+
+    function esc(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    // Часы в хедере
+    function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // ============================================================
+    // ИНИЦИАЛИЗАЦИЯ
+    // ============================================================
+
+    for (const key in data) {
+        renderTable(key);
+    }
+</script>
+</body>
+</html>

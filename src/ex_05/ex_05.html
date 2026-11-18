@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Барбершоп — Экранные формы (Ex.05 Wireframes)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --bg-elevated: #1a1a1a;
+            --bg-card: #222222;
+            --bg-card-hover: #2a2a2a;
+            --fg: #f0e6d6;
+            --fg-muted: #8a8070;
+            --fg-dim: #5a5448;
+            --accent: #c8913a;
+            --accent-hover: #daa04e;
+            --accent-dim: rgba(200, 145, 58, 0.15);
+            --danger: #c0392b;
+            --success: #27ae60;
+            --success-dim: rgba(39, 174, 96, 0.15);
+            --border: #333333;
+            --border-light: #444444;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--fg); min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(200,145,58,0.08) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+
+        header { position: sticky; top: 0; z-index: 100; background: rgba(15,15,15,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+        .logo { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 22px; color: var(--accent); letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        .header-info { font-size: 13px; color: var(--fg-muted); display: flex; align-items: center; gap: 16px; }
+        
+        .nav-bar { position: sticky; top: 64px; z-index: 90; background: rgba(26,26,26,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+        .nav-bar::-webkit-scrollbar { display: none; }
+        .nav-tab { padding: 14px 20px; font-size: 14px; font-weight: 600; color: var(--fg-muted); background: none; border: none; cursor: pointer; position: relative; white-space: nowrap; transition: color var(--transition); }
+        .nav-tab:hover { color: var(--fg); }
+        .nav-tab.active { color: var(--accent); }
+        .nav-tab.active::after { content: ''; position: absolute; bottom: 0; left: 12px; right: 12px; height: 2px; background: var(--accent); border-radius: 2px 2px 0 0; }
+
+        main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 32px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .wireframe-screen { display: none; animation: fadeSlideIn 0.35s ease-out; margin-bottom: 50px; padding-bottom: 50px; border-bottom: 1px dashed var(--border); }
+        .wireframe-screen.sub-active { display: block; }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .spec-block { background: rgba(200, 145, 58, 0.05); border: 1px dashed var(--accent); border-radius: var(--radius); padding: 20px; margin-bottom: 30px; font-size: 13px; line-height: 1.8; }
+        .spec-block b { color: var(--accent); text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; display: inline-block; min-width: 220px; }
+        .spec-block span { color: var(--fg); }
+
+        .ref-header { margin-bottom: 24px; }
+        .ref-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--fg); margin-bottom: 6px; }
+        .ref-type-badge { display: inline-block; padding: 3px 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; border-radius: 4px; margin-bottom: 12px; margin-right: 8px; }
+        .ref-type-badge.id { background: var(--accent-dim); color: var(--accent); }
+        .ref-type-badge.role { background: rgba(52, 152, 219, 0.15); color: #5dade2; }
+
+        .ex05-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--fg-dim); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px dashed var(--border); }
+        .ex05-label i { color: var(--accent); font-size: 12px; opacity: 0.7; }
+
+        .frame-box { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 24px; margin-bottom: 24px; }
+        .list-frame { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
+        .list-frame-header { padding: 14px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .list-frame-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--fg-dim); display: flex; align-items: center; gap: 8px; }
+        .list-frame-title i { color: var(--accent); font-size: 13px; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table thead th { padding: 12px 20px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-dim); background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border); }
+        .data-table tbody tr { border-bottom: 1px solid var(--border); transition: background var(--transition); }
+        .data-table tbody tr:last-child { border-bottom: none; }
+        .data-table tbody tr:hover { background: var(--bg-card); }
+        .data-table tbody td { padding: 14px 20px; font-size: 14px; color: var(--fg); vertical-align: middle; }
+        .col-id { color: var(--fg-dim); font-size: 13px; font-weight: 600; width: 60px; }
+        .col-actions { width: 160px; text-align: right; }
+
+        .data-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--fg-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-input, .form-select { width: 100%; padding: 10px 14px; font-size: 14px; font-family: inherit; color: var(--fg); background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); outline: none; transition: border-color var(--transition); }
+        .form-input:focus, .form-select:focus { border-color: var(--accent); }
+        .form-select option { background: var(--bg-card); color: var(--fg); }
+
+        .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; font-size: 13px; font-weight: 600; font-family: inherit; border: 1px solid var(--border-light); border-radius: var(--radius); cursor: pointer; transition: all var(--transition); white-space: nowrap; background: var(--bg-card); color: var(--fg); text-decoration: none; }
+        .btn i { font-size: 12px; }
+        .btn-primary { background: var(--accent); border-color: var(--accent); color: #0f0f0f; }
+        .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+        .btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--fg-dim); }
+        .btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: white; }
+        .btn-ghost { background: transparent; border-color: transparent; color: var(--fg-muted); padding: 9px 12px; }
+        .btn-ghost:hover { color: var(--fg); background: var(--bg-card); }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+        .actions-frame { background: rgba(200, 145, 58, 0.05); border: 1px solid rgba(200, 145, 58, 0.2); border-radius: var(--radius-lg); padding: 20px 24px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; align-items: center; }
+        .actions-group { display: flex; align-items: center; gap: 10px; }
+        .action-hint { color:var(--fg-dim); font-size:12px; }
+        .ops-separator { width: 1px; height: 40px; background: var(--border-light); margin: 0 8px; }
+        
+        .slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px; }
+        .slot-item { padding: 10px; text-align: center; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; font-weight: 600; cursor: pointer; transition: all var(--transition); }
+        .slot-item.free { border-color: rgba(39, 174, 96, 0.3); color: var(--success); }
+        .slot-item.free:hover { background: var(--success-dim); }
+        .slot-item.busy { background: rgba(0,0,0,0.2); color: var(--fg-dim); cursor: not-allowed; }
+        .metric-card { background: var(--bg-card); border-radius: var(--radius); padding: 15px; text-align: center; border: 1px solid var(--border); }
+        .metric-val { font-size: 24px; font-weight: 700; color: var(--accent); display: block; margin-bottom: 4px;}
+        .metric-label { font-size: 12px; color: var(--fg-dim); text-transform: uppercase; }
+        .star { color: var(--accent); }
+        .ops-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo"><i class="fa-solid fa-scissors"></i> BARBER WIREFRAMES</div>
+    <div class="header-info"><span><i class="fa-solid fa-diagram-project"></i> Требование Ex.05</span></div>
+</header>
+
+<nav class="nav-bar" role="tablist">
+    <button class="nav-tab active" onclick="switchTab(event, 'tab-client')">Клиент (CF)</button>
+    <button class="nav-tab" onclick="switchTab(event, 'tab-manager')">Менеджер (MF)</button>
+    <button class="nav-tab" onclick="switchTab(event, 'tab-barber')">Мастер (BF)</button>
+</nav>
+
+<main>
+
+    <!-- ================================================== -->
+    <!--                     КЛИЕНТ (CF)                    -->
+    <!-- ================================================== -->
+    <div id="tab-client" class="tab-content active">
+        
+        <!-- CF-01 Главная страница -->
+        <section class="wireframe-screen sub-active" id="screen-cf-01">
+            <div class="spec-block">
+                <b>Название формы:</b> <span>Главная страница</span><br>
+                <b>Роль(-и):</b> <span>Все роли</span><br>
+                <b>Фрейм главной операции:</b> <span>Знакомство с сервисом</span><br>
+                <b>Фрейм(-ы) других операций:</b> <span>Просмотр акций</span><br>
+                <b>Вызовы/Переходы/Отказы:</b> <span>Вызов: Записаться -> CF-02. Вызов: Регистрация -> CF-06</span><br>
+                <b>Фреймы данных:</b> <span>Список (Акции)</span>
+            </div>
+            <div class="ref-header">
+                <span class="ref-type-badge id">CF-01</span>
+                <span class="ref-type-badge role">Роль: Все роли</span>
+                <h1 class="ref-title">Главная страница</h1>
+            </div>
+            <div class="list-frame">
+                <div class="list-frame-header">
+                    <div class="list-frame-title"><i class="fa-solid fa-tags"></i> ФРЕЙМ ДАННЫХ: СПИСОК (Акции)</div>
+                </div>
+                <div class="data-table">
+                    <tbody>
+                        <tr>
+                            <td><strong>Акция 1: Стрижка + борода со скидкой 20%</strong><br><span style="color:var(--fg-dim); font-size:12px;">Информация о барбершопе</span></td>
+                        </tr>
+                    </tbody>
+                </div>
+            </div>
+            <div class="actions-frame">
+                <div class="ex05-label" style="border:none; margin:0; padding:0;"><i class="fa-solid fa-right-from-bracket"></i> ВЫЗОВЫ / ПЕРЕХОДЫ</div>
+                <div class="actions-group">
+                    <button class="btn btn-secondary" onclick="navigateTo('screen-cf-06')"><i class="fa-solid fa-user-plus"></i> РЕГИСТРАЦИЯ / ВХОД</button>
+                    <span class="action-hint">(Переход: CF-06)</span>
+                    <div class="ops-separator"></div>
+                    <button class="btn btn-primary" onclick="navigateTo('screen-cf-02')"><i class="fa-solid fa-calendar-plus"></i> ЗАПИСАТЬСЯ</button>
+                    <span class="action-hint">(Переход: CF-02)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CF-02 Выбор услуги -->
+        <section class="wireframe-screen" id="screen-cf-02">
+            <div class="spec-block">
+                <b>Название формы:</b> <span>Выбор услуги</span><br>
+                <b>Роль(-и):</b> <span>Клиент</span><br>
+                <b>Фрейм главной операции:</b> <span>Выбор услуги</span><br>
+                <b>Фрейм(-ы) других операций:</b> <span>Сортировка, Фильтрация, Поиск</span><br>
+                <b>Вызовы/Переходы/Отказы:</b> <span>Далее: CF-03/CF-04. Отказ: CF-01</span><br>
+                <b>Фреймы данных:</b> <span>Список (Каталог услуг с ценами)</span>
+            </div>
+            <div class="ref-header">
+                <span class="ref-type-badge id">CF-02</span><span class="ref-type-badge role">Роль: Клиент</span>
+                <h1 class="ref-title">Выбор услуги</h1>
+            </div>
+            <div class="frame-box">
+                <div class="ex05-label"><i class="fa-solid fa-sliders"></i> ФРЕЙМ ДРУГИХ ОПЕРАЦИЙ</div>
+                <div class="ops-row">
+                    <input class="form-input" style="max-width: 300px; margin:0;" placeholder="Поиск по названию...">
+                    <select class="form-select" style="max-width: 200px; margin:0;"><option>Все категории</option></select>
+                </div>
+            </div>
+            <div class="list-frame">
+                <div class="list-frame-header">
+                    <div class="list-frame-title"><i class="fa-solid fa-list"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ФРЕЙМ ДАННЫХ: СПИСОК</div>
+                </div>
+                <table class="data-table">
+                    <thead><tr><th class="col-id">ID</th><th>Наименование</th><th>Цена, руб.</th><th class="col-actions">Действие</th></tr></thead>
+                    <tbody>
+                        <tr><td class="col-id">1</td><td>Мужская стрижка</td><td>1 500 ₽</td><td class="col-actions"><button class="btn btn-secondary btn-sm" onclick="navigateTo('screen-cf-03')">Выбрать</button></td></tr>
+                        <tr><td class="col-id">2</td><td>Стрижка бороды</td><td>800 ₽</td><td class="col-actions"><button class="btn btn-secondary btn-sm" onclick="navigateTo('screen-cf-03')">Выбрать</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="actions-frame">
+                <div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-cf-01')"><i class="fa-solid fa-arrow-left"></i> Отказ (CF-01)</button></div>
+                <div class="actions-group"><button class="btn btn-primary" onclick="navigateTo('screen-cf-03')">Далее >>> </button></div>
+            </div>
+        </section>
+
+        <!-- CF-03 Выбор слота -->
+        <section class="wireframe-screen" id="screen-cf-03">
+            <div class="spec-block">
+                <b>Название формы:</b> <span>Выбор слота</span><br>
+                <b>Роль(-и):</b> <span>Клиент</span><br>
+                <b>Фрейм главной операции:</b> <span>Выбор даты и времени</span><br>
+                <b>Фрейм(-ы) других операций:</b> <span>Фильтр по мастеру</span><br>
+                <b>Вызовы/Переходы/Отказы:</b> <span>Далее: CF-04/CF-05. Отказ: CF-02</span><br>
+                <b>Фреймы данных:</b> <span>Список (Свободные и занятые слоты)</span>
+            </div>
+            <div class="ref-header">
+                <span class="ref-type-badge id">CF-03</span><span class="ref-type-badge role">Роль: Клиент</span>
+                <h1 class="ref-title">Выбор слота</h1>
+            </div>
+            <div class="frame-box">
+                <div class="ex05-label"><i class="fa-solid fa-sliders"></i> ФРЕЙМ ДРУГИХ ОПЕРАЦИЙ</div>
+                <div class="ops-row"><div class="form-label" style="margin:0;">Мастер:</div><select class="form-select" style="max-width: 250px; margin:0;"><option>Все мастера</option></select></div>
+            </div>
+            <div class="list-frame">
+                <div class="list-frame-header"><div class="list-frame-title"><i class="fa-solid fa-table-cells"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ФРЕЙМ ДАННЫХ: СПИСОК</div></div>
+                <div style="padding: 20px; border-bottom: 1px solid var(--border); color:var(--fg-muted); font-weight:600;">12 Марта 2024</div>
+                <div class="slots-grid">
+                    <div class="slot-item free" onclick="navigateTo('screen-cf-05')">10:00</div>
+                    <div class="slot-item busy">11:00</div>
+                    <div class="slot-item free" onclick="navigateTo('screen-cf-05')">12:00</div>
+                    <div class="slot-item free" onclick="navigateTo('screen-cf-05')">13:00</div>
+                </div>
+            </div>
+            <div class="actions-frame">
+                <div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-cf-02')"><i class="fa-solid fa-arrow-left"></i> Отказ (CF-02)</button></div>
+                <div class="actions-group"><button class="btn btn-primary" onclick="navigateTo('screen-cf-05')">Далее (CF-05) >>> </button></div>
+            </div>
+        </section>
+
+        <!-- CF-04 Выбор мастера -->
+        <section class="wireframe-screen" id="screen-cf-04">
+            <div class="spec-block">
+                <b>Название формы:</b> <span>Выбор мастера</span><br>
+                <b>Роль(-и):</b> <span>Клиент</span><br>
+                <b>Фрейм главной операции:</b> <span>Выбор мастера</span><br>
+                <b>Фрейм(-ы) других операций:</b> <span>Сортировка по рейтингу</span><br>
+                <b>Вызовы/Переходы/Отказы:</b> <span>Далее: CF-03/CF-05. Отказ: CF-02</span><br>
+                <b>Фреймы данных:</b> <span>Список (Мастера и их специализация)</span>
+            </div>
+            <div class="ref-header">
+                <span class="ref-type-badge id">CF-04</span><span class="ref-type-badge role">Роль: Клиент</span>
+                <h1 class="ref-title">Выбор мастера</h1>
+            </div>
+            <div class="list-frame">
+                <div class="list-frame-header"><div class="list-frame-title"><i class="fa-solid fa-users"></i> ФРЕЙМ ДАННЫХ: СПИСОК</div></div>
+                <table class="data-table">
+                    <thead><tr><th>Мастер</th><th>Специализация</th><th>Рейтинг</th><th class="col-actions">Действие</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Алексеев Д.</strong></td><td>Классика, Борода</td><td><span class="star">★★★★★</span></td><td class="col-actions"><button class="btn btn-secondary btn-sm" onclick="navigateTo('screen-cf-03')">Выбрать</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="actions-frame">
+                <div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-cf-02')"><i class="fa-solid fa-arrow-left"></i> Отказ</button></div>
+                <div class="actions-group"><button class="btn btn-primary" onclick="navigateTo('screen-cf-03')">Далее >>> </button></div>
+            </div>
+        </section>
+
+        <!-- CF-05 Подтверждение записи -->
+        <section class="wireframe-screen" id="screen-cf-05">
+            <div class="spec-block">
+                <b>Название формы:</b> <span>Подтверждение записи</span><br>
+                <b>Роль(-и):</b> <span>Клиент</span><br>
+                <b>Фрейм главной операции:</b> <span>Подтверждение записи</span><br>
+                <b>Фрейм(-ы) других операций:</b> <span>Добавление комментария</span><br>
+                <b>Вызовы/Переходы/Отказы:</b> <span>Вызов: Забронировать (UC03) -> CF-07. Отказ: CF-03</span><br>
+                <b>Фреймы данных:</b> <span>Карточка (Услуга, мастер, время, стоимость)</span>
+            </div>
+            <div class="ref-header">
+                <span class="ref-type-badge id">CF-05</span><span class="ref-type-badge role">Роль: Клиент</span>
+                <h1 class="ref-title">Подтверждение записи</h1>
+            </div>
+            <div class="data-card">
+                <div class="ex05-label"><i class="fa-solid fa-bullseye"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ФРЕЙМ ДАННЫХ: КАРТОЧКА</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: var(--bg-card); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border);">
+                    <div><span class="form-label">Услуга</span><div>Комплекс</div></div>
+                    <div><span class="form-label">Мастер</span><div>Алексеев Д.</div></div>
+                    <div><span class="form-label">Дата/Время</span><div>12.03.2024 10:00</div></div>
+                    <div><span class="form-label">Стоимость</span><div style="color:var(--accent); font-size:20px; font-weight:700;">2 000 ₽</div></div>
+                </div>
+            </div>
+            <div class="frame-box">
+                <div class="ex05-label"><i class="fa-solid fa-comment"></i> ФРЕЙМ ДРУГИХ ОПЕРАЦИЙ</div>
+                <textarea class="form-input" rows="2" placeholder="Комментарий..."></textarea>
+            </div>
+            <div class="actions-frame">
+                <div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-cf-03')"><i class="fa-solid fa-arrow-left"></i> Отказ</button></div>
+                <div class="actions-group" style="flex-direction:column; align-items:flex-end;">
+                    <button class="btn btn-primary" onclick="navigateTo('screen-cf-07')"><i class="fa-solid fa-check"></i> ЗАБРОНИРОВАТЬ (UC03)</button>
+                    <span class="action-hint">Результат: SMS -> Переход (CF-07)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CF-06 РЕГИСТРАЦИЯ КЛИЕНТА САМИМ СОБОЙ -->
+        <section class="wireframe-screen" id="screen-cf-06">
+            <div class="spec-block">
+                <b>Название формы:</b> <span>Регистрация клиента</span><br>
+                <b>Роль(-и):</b> <span>Незарегистрированный пользователь</span><br>
+                <b>Фрейм главной операции:</b> <span>Создание учетной записи клиента (Саморегистрация UC01)</span><br>
+                <b>Фрейм(-ы) других операций:</b> <span>Проверка введенных данных, Проверка уровня пароля</span><br>
+                <b>Вызовы/Переходы/Отказы:</b> <span>Вызов: Зарегистрироваться (UC01) -> CF-02 (Выбор услуги). Отказ: Отмена -> CF-01 (Главная)</span><br>
+                <b>Фреймы данных:</b> <span>Карточка (Имя, телефон, пароль)</span>
+            </div>
+            <div class="ref-header">
+                <span class="ref-type-badge id">CF-06</span>
+                <span class="ref-type-badge role">Роль: Незарег. пользователь</span>
+                <h1 class="ref-title">Регистрация клиента</h1>
+            </div>
+            
+            <div class="data-card">
+                <div class="ex05-label"><i class="fa-solid fa-bullseye"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ФРЕЙМ ДАННЫХ: КАРТОЧКА (Ввод данных)</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Телефон (Логин)</label>
+                    <input class="form-input" placeholder="+7 (999) 123-45-67">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Имя (Отчество)</label>
+                    <input class="form-input" placeholder="Иван Иванович">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Пароль</label>
+                    <input class="form-input" type="password" placeholder="Введите пароль">
+                    <!-- Фрейм других операций: Проверка силы пароля -->
+                    <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
+                        <div style="flex-grow:1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;">
+                            <div style="width: 60%; height: 100%; background: var(--accent);"></div>
+                        </div>
+                        <span style="font-size: 12px; color: var(--accent); font-weight: 600;">Уровень пароля: Средний</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions-frame">
+                <div class="actions-group">
+                    <div class="ex05-label" style="border:none; margin:0; padding:0;"><i class="fa-solid fa-ban"></i> ОТКАЗ ОТ ОПЕРАЦИИ</div>
+                    <button class="btn btn-ghost" onclick="navigateTo('screen-cf-01')"><i class="fa-solid fa-arrow-left"></i> Отмена</button>
+                    <span class="action-hint">(Переход: CF-01)</span>
+                </div>
+                <div class="actions-group">
+                    <div class="ex05-label" style="border:none; margin:0; padding:0;"><i class="fa-solid fa-bolt"></i> ВЫЗОВ ГЛАВНОЙ ОПЕРАЦИИ</div>
+                    <button class="btn btn-primary" onclick="navigateTo('screen-cf-02')"><i class="fa-solid fa-user-plus"></i> ЗАРЕГИСТРИРОВАТЬСЯ (UC01)</button>
+                    <span class="action-hint">(Результат: SMS -> CF-02)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CF-07 Форма отзыва -->
+        <section class="wireframe-screen" id="screen-cf-07">
+            <div class="spec-block">
+                <b>Название формы:</b> <span>Форма отзыва</span><br>
+                <b>Роль(-и):</b> <span>Клиент (Только свои завершенные)</span><br>
+                <b>Фрейм главной операции:</b> <span>Оставление отзыва</span><br>
+                <b>Фрейм(-ы) других операций:</b> <span>Нет</span><br>
+                <b>Вызовы/Переходы/Отказы:</b> <span>Вызов: Отправить -> Главная. Отказ: Пропустить -> Главная</span><br>
+                <b>Фреймы данных:</b> <span>Карточка (Инфо о слоте, рейтинг, текст)</span>
+            </div>
+            <div class="ref-header">
+                <span class="ref-type-badge id">CF-07</span><span class="ref-type-badge role">Роль: Клиент (свои заверш.)</span>
+                <h1 class="ref-title">Форма отзыва</h1>
+            </div>
+            <div class="data-card">
+                <div class="ex05-label"><i class="fa-solid fa-bullseye"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ФРЕЙМ ДАННЫХ: КАРТОЧКА</div>
+                <div style="margin-bottom: 15px; color: var(--fg-muted); font-size: 14px;">О услуге: Стрижка бороды у Алексея (12.03.2024)</div>
+                <div class="form-group">
+                    <label class="form-label">Оценка</label>
+                    <div style="font-size: 28px; cursor: pointer; margin-top: 5px;"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span style="color:var(--fg-dim)">★</span></div>
+                </div>
+                <div class="form-group"><label class="form-label">Текст отзыва</label><textarea class="form-input" rows="4" placeholder="Текст..."></textarea></div>
+            </div>
+            <div class="actions-frame">
+                <div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-cf-01')"><i class="fa-solid fa-ban"></i> Пропустить</button></div>
+                <div class="actions-group"><button class="btn btn-primary" onclick="navigateTo('screen-cf-01')"><i class="fa-solid fa-paper-plane"></i> Отправить</button></div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ================================================== -->
+    <!--                   МЕНЕДЖЕР (MF)                    -->
+    <!-- ================================================== -->
+    <div id="tab-manager" class="tab-content">
+        <section class="wireframe-screen sub-active" id="screen-mf-01">
+            <div class="spec-block">
+                <b>Название формы:</b> <span>Панель управления сменами</span><br>
+                <b>Роль(-и):</b> <span>Менеджер, Администратор</span><br>
+                <b>Фрейм главной операции:</b> <span>Обзор текущей смены</span><br>
+                <b>Фрейм(-ы) других операций:</b> <span>Просмотр метрик</span><br>
+                <b>Вызовы/Переходы/Отказы:</b> <span>Вызовы: MF-02, MF-03, MF-04, MF-05, MF-06</span><br>
+                <b>Фреймы данных:</b> <span>Список (История записей, финансы)</span>
+            </div>
+            <div class="ref-header"><span class="ref-type-badge id">MF-01</span><span class="ref-type-badge role">Роль: Менеджер, Админ</span><h1 class="ref-title">Панель управления сменами</h1></div>
+            <div class="frame-box">
+                <div class="ex05-label"><i class="fa-solid fa-chart-pie"></i> ФРЕЙМ ДРУГИХ ОПЕРАЦИЙ</div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div class="metric-card"><span class="metric-val">12</span><span class="metric-label">Записей</span></div>
+                    <div class="metric-card"><span class="metric-val">24 000₽</span><span class="metric-label">Выручка</span></div>
+                    <div class="metric-card"><span class="metric-val">3</span><span class="metric-label">В очереди</span></div>
+                </div>
+            </div>
+            <div class="list-frame">
+                <div class="list-frame-header"><div class="list-frame-title"><i class="fa-solid fa-list"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ДАННЫХ</div></div>
+                <table class="data-table">
+                    <thead><tr><th>Время</th><th>Клиент</th><th>Услуга</th><th class="col-actions">Вызовы</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>10:00</td><td>Иван И.</td><td>Стрижка</td>
+                            <td class="col-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="navigateTo('screen-mf-02')" title="MF-02"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn btn-primary btn-sm" onclick="navigateTo('screen-mf-03')" title="MF-03"><i class="fa-solid fa-check"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="actions-frame">
+                <div class="ex05-label" style="border:none; margin:0; padding:0;"><i class="fa-solid fa-right-from-bracket"></i> ВЫЗОВЫ ОПЕРАЦИЙ</div>
+                <div class="actions-group">
+                    <button class="btn btn-secondary" onclick="navigateTo('screen-mf-04')"><i class="fa-solid fa-user-plus"></i> Рег. клиента (MF-04)</button>
+                    <button class="btn btn-secondary" onclick="navigateTo('screen-mf-05')"><i class="fa-solid fa-calendar-plus"></i> Запись (MF-05)</button>
+                    <button class="btn btn-secondary" onclick="navigateTo('screen-mf-06')"><i class="fa-solid fa-comments"></i> Отзывы (MF-06)</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="wireframe-screen" id="screen-mf-02">
+            <div class="spec-block"><b>Название формы:</b> <span>Редактирования слота</span><br><b>Роль(-и):</b> <span>Менеджер, Админ</span><br><b>Фрейм главной операции:</b> <span>Редактирование подробностей слота</span><br><b>Фрейм(-ы) других операций:</b> <span>Удаление слота</span><br><b>Вызовы/Переходы/Отказы:</b> <span>Вызов: Сохранить/Удалить -> MF-01. Отказ: Закрыть -> MF-01</span><br><b>Фреймы данных:</b> <span>Карточка (Расписание, слоты)</span></div>
+            <div class="ref-header"><span class="ref-type-badge id">MF-02</span><span class="ref-type-badge role">Роль: Менеджер</span><h1 class="ref-title">Редактирование слота</h1></div>
+            <div class="data-card">
+                <div class="ex05-label"><i class="fa-solid fa-bullseye"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ФРЕЙМ ДАННЫХ</div>
+                <div class="form-group"><label class="form-label">Мастер</label><select class="form-select" style="max-width: 300px;"><option>Алексеев Д.</option></select></div>
+                <div class="form-group"><label class="form-label">Дата / Время</label><div style="display:flex; gap:10px; max-width: 400px;"><input class="form-input" type="date" value="2024-03-12"><input class="form-input" type="time" value="10:00"></div></div>
+            </div>
+            <div class="actions-frame">
+                <div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-mf-01')"><i class="fa-solid fa-arrow-left"></i> Закрыть</button></div>
+                <div class="actions-group"><button class="btn btn-danger"><i class="fa-solid fa-trash"></i> Удалить</button><button class="btn btn-primary" onclick="navigateTo('screen-mf-01')"><i class="fa-solid fa-save"></i> Сохранить</button></div>
+            </div>
+        </section>
+
+        <section class="wireframe-screen" id="screen-mf-03">
+            <div class="spec-block"><b>Название формы:</b> <span>Завершение записи</span><br><b>Роль(-и):</b> <span>Менеджер, Админ</span><br><b>Фрейм главной операции:</b> <span>Фиксация предоставления услуги</span><br><b>Вызовы/Переходы/Отказы:</b> <span>Вызов: Завершить -> MF-01. Отказ: Отмена -> MF-01</span><br><b>Фреймы данных:</b> <span>Карточка (Запись клиента)</span></div>
+            <div class="ref-header"><span class="ref-type-badge id">MF-03</span><span class="ref-type-badge role">Роль: Менеджер</span><h1 class="ref-title">Завершение записи</h1></div>
+            <div class="data-card">
+                <div class="ex05-label"><i class="fa-solid fa-bullseye"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ФРЕЙМ ДАННЫХ</div>
+                <div class="form-group"><label class="form-label">Сумма к оплате</label><input class="form-input" type="text" value="800" style="max-width: 200px;"></div>
+                <div class="form-group"><label class="form-label">Способ оплаты</label><select class="form-select" style="max-width: 250px;"><option>Наличные</option><option>Карта</option></select></div>
+            </div>
+            <div class="actions-frame">
+                <div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-mf-01')"><i class="fa-solid fa-ban"></i> Отмена</button></div>
+                <div class="actions-group"><button class="btn btn-primary" onclick="navigateTo('screen-mf-01')"><i class="fa-solid fa-check-double"></i> Завершить</button></div>
+            </div>
+        </section>
+
+        <section class="wireframe-screen" id="screen-mf-04">
+            <div class="spec-block"><b>Название формы:</b> <span>Регистрация клиента (менеджером)</span><br><b>Роль(-и):</b> <span>Менеджер, Админ</span><br><b>Фрейм главной операции:</b> <span>Создание учетной записи клиентом</span><br><b>Фрейм(-ы) других операций:</b> <span>Поиск зарегистрированных клиентов</span><br><b>Вызовы/Переходы/Отказы:</b> <span>Вызов: Зарегистрировать (UC04) -> MF-05. Отказ: Отмена -> MF-01</span><br><b>Фреймы данных:</b> <span>Карточка (Имя и телефон)</span></div>
+            <div class="ref-header"><span class="ref-type-badge id">MF-04</span><span class="ref-type-badge role">Роль: Менеджер</span><h1 class="ref-title">Регистрация клиента (менеджером)</h1></div>
+            <div class="frame-box"><div class="ex05-label"><i class="fa-solid fa-magnifying-glass"></i> ФРЕЙМ ДРУГИХ ОПЕРАЦИЙ</div><input class="form-input" style="max-width: 400px;" placeholder="Поиск по телефону..."></div>
+            <div class="data-card">
+                <div class="ex05-label"><i class="fa-solid fa-bullseye"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ФРЕЙМ ДАННЫХ</div>
+                <div class="form-group"><label class="form-label">Телефон</label><input class="form-input" style="max-width: 300px;" placeholder="+7..."></div>
+                <div class="form-group"><label class="form-label">Имя</label><input class="form-input" style="max-width: 300px;" placeholder="Иван"></div>
+            </div>
+            <div class="actions-frame">
+                <div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-mf-01')"><i class="fa-solid fa-ban"></i> Отмена</button></div>
+                <div class="actions-group"><button class="btn btn-primary" onclick="navigateTo('screen-mf-05')"><i class="fa-solid fa-user-plus"></i> Зарегистрировать (UC04)</button></div>
+            </div>
+        </section>
+
+        <section class="wireframe-screen" id="screen-mf-05">
+            <div class="spec-block"><b>Название формы:</b> <span>Запись клиента</span><br><b>Роль(-и):</b> <span>Менеджер, Админ</span><br><b>Фрейм главной операции:</b> <span>Запись клиента на слот</span><br><b>Вызовы/Переходы/Отказы:</b> <span>Вызов: Забронировать -> MF-01. Отказ: Отмена -> MF-01</span><br><b>Фреймы данных:</b> <span>Список (Данные клиента), Карточка (Услуги, расписание)</span></div>
+            <div class="ref-header"><span class="ref-type-badge id">MF-05</span><span class="ref-type-badge role">Роль: Менеджер</span><h1 class="ref-title">Запись клиента</h1></div>
+            <div class="data-card">
+                <div class="ex05-label"><i class="fa-solid fa-bullseye"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ФРЕЙМ ДАННЫХ</div>
+                <div class="form-group"><label class="form-label">Выберите слот</label><select class="form-select" style="max-width: 400px;"><option>12.03 15:00</option></select></div>
+                <div class="form-group"><label class="form-label">Выберите услугу</label><select class="form-select" style="max-width: 400px;"><option>Стрижка</option></select></div>
+            </div>
+            <div class="actions-frame">
+                <div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-mf-01')"><i class="fa-solid fa-ban"></i> Отмена</button></div>
+                <div class="actions-group"><button class="btn btn-primary" onclick="navigateTo('screen-mf-01')"><i class="fa-solid fa-check"></i> Забронировать</button></div>
+            </div>
+        </section>
+
+        <section class="wireframe-screen" id="screen-mf-06">
+            <div class="spec-block"><b>Название формы:</b> <span>Отзывы</span><br><b>Роль(-и):</b> <span>Менеджер, Админ</span><br><b>Фрейм главной операции:</b> <span>Модерация отзывов</span><br><b>Фрейм(-ы) других операций:</b> <span>Скрытие отзывов</span><br><b>Вызовы/Переходы/Отказы:</b> <span>Отказ: Закрыть -> MF-01</span><br><b>Фреймы данных:</b> <span>Список (Все отзывы)</span></div>
+            <div class="ref-header"><span class="ref-type-badge id">MF-06</span><span class="ref-type-badge role">Роль: Менеджер</span><h1 class="ref-title">Отзывы</h1></div>
+            <div class="list-frame">
+                <div class="list-frame-header"><div class="list-frame-title"><i class="fa-solid fa-list"></i> ФРЕЙМ ДАННЫХ: СПИСОК</div></div>
+                <table class="data-table">
+                    <thead><tr><th>Текст</th><th>Оценка</th><th class="col-actions">Операции</th></tr></thead>
+                    <tbody><tr><td>Отличный мастер!</td><td><span class="star">★★★★★</span></td><td class="col-actions"><button class="btn btn-secondary btn-sm">Скрыть</button></td></tr></tbody>
+                </table>
+            </div>
+            <div class="actions-frame"><div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-mf-01')"><i class="fa-solid fa-arrow-left"></i> Закрыть</button></div></div>
+        </section>
+    </div>
+
+    <!-- ================================================== -->
+    <!--                    МАСТЕР (BF)                     -->
+    <!-- ================================================== -->
+    <div id="tab-barber" class="tab-content">
+        <section class="wireframe-screen sub-active" id="screen-bf-01">
+            <div class="spec-block"><b>Название формы:</b> <span>Профиль мастера</span><br><b>Роль(-и):</b> <span>Владелец профиля</span><br><b>Фрейм главной операции:</b> <span>Обзор расписания и метрик</span><br><b>Фрейм(-ы) других операций:</b> <span>Доступ к функциям</span><br><b>Вызовы/Переходы/Отказы:</b> <span>Переходы: BF-02, BF-04</span><br><b>Фреймы данных:</b> <span>Список (Текущие записи)</span></div>
+            <div class="ref-header"><span class="ref-type-badge id">BF-01</span><span class="ref-type-badge role">Роль: Владелец профиля</span><h1 class="ref-title">Профиль мастера</h1></div>
+            <div class="frame-box">
+                <div class="ex05-label"><i class="fa-solid fa-chart-pie"></i> ФРЕЙМ ДРУГИХ ОПЕРАЦИЙ</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 400px;">
+                    <div class="metric-card"><span class="metric-val">4.9 ★</span><span class="metric-label">Рейтинг</span></div>
+                    <div class="metric-card"><span class="metric-val">45</span><span class="metric-label">За месяц</span></div>
+                </div>
+            </div>
+            <div class="list-frame">
+                <div class="list-frame-header"><div class="list-frame-title"><i class="fa-solid fa-list"></i> ФРЕЙМ ДАННЫХ: СПИСОК</div></div>
+                <table class="data-table"><thead><tr><th>Время</th><th>Клиент / Услуга</th></tr></thead><tbody><tr><td>10:00</td><td>Иван (Стрижка)</td></tr></tbody></table>
+            </div>
+            <div class="actions-frame">
+                <div class="ex05-label" style="border:none; margin:0; padding:0;"><i class="fa-solid fa-right-from-bracket"></i> ВЫЗОВЫ / ПЕРЕХОДЫ</div>
+                <div class="actions-group">
+                    <button class="btn btn-primary" onclick="navigateTo('screen-bf-02')"><i class="fa-solid fa-calendar"></i> Расписание (BF-02)</button>
+                    <button class="btn btn-secondary" onclick="navigateTo('screen-bf-04')"><i class="fa-solid fa-star"></i> Отзывы (BF-04)</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="wireframe-screen" id="screen-bf-02">
+            <div class="spec-block"><b>Название формы:</b> <span>Расписание мастера</span><br><b>Роль(-и):</b> <span>Владелец профиля</span><br><b>Фрейм главной операции:</b> <span>Просмотр расписания</span><br><b>Фрейм(-ы) других операций:</b> <span>Фильтрация по датам</span><br><b>Вызовы/Переходы/Отказы:</b> <span>Далее: BF-03. Отказ: Назад -> BF-01</span><br><b>Фреймы данных:</b> <span>Список (Персональное расписание)</span></div>
+            <div class="ref-header"><span class="ref-type-badge id">BF-02</span><span class="ref-type-badge role">Роль: Владелец профиля</span><h1 class="ref-title">Расписание мастера</h1></div>
+            <div class="frame-box"><div class="ex05-label"><i class="fa-solid fa-sliders"></i> ФРЕЙМ ДРУГИХ ОПЕРАЦИЙ</div><div class="ops-row"><div class="form-label" style="margin:0;">Период:</div><input class="form-input" type="date" style="max-width: 200px; margin:0;" value="2024-03-12"></div></div>
+            <div class="list-frame">
+                <div class="list-frame-header"><div class="list-frame-title"><i class="fa-solid fa-table-cells-large"></i> ФРЕЙМ ДАННЫХ: СПИСОК</div></div>
+                <table class="data-table">
+                    <thead><tr><th>Время</th><th>Услуга / Клиент</th><th>Статус</th><th class="col-actions">Действие</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>10:00</strong></td><td>Стрижка / Иван И.</td>
+                            <td><span style="color:var(--success); background:var(--success-dim); padding: 4px 10px; border-radius: 20px; font-size:12px;">Забронирован</span></td>
+                            <td class="col-actions"><button class="btn btn-secondary btn-sm" onclick="navigateTo('screen-bf-03')">Открыть (BF-03)</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="actions-frame"><div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-bf-01')"><i class="fa-solid fa-arrow-left"></i> Назад</button></div></div>
+        </section>
+
+        <section class="wireframe-screen" id="screen-bf-03">
+            <div class="spec-block"><b>Название формы:</b> <span>Детали слота</span><br><b>Роль(-и):</b> <span>Владелец профиля</span><br><b>Фрейм главной операции:</b> <span>Просмотр полной информации</span><br><b>Фрейм(-ы) других операций:</b> <span>Просмотр контактных данных</span><br><b>Вызовы/Переходы/Отказы:</b> <span>Отказ: Закрыть -> BF-02</span><br><b>Фреймы данных:</b> <span>Карточка (Детали записи, клиент)</span></div>
+            <div class="ref-header"><span class="ref-type-badge id">BF-03</span><span class="ref-type-badge role">Роль: Владелец профиля</span><h1 class="ref-title">Детали слота</h1></div>
+            <div class="data-card">
+                <div class="ex05-label"><i class="fa-solid fa-bullseye"></i> ФРЕЙМ ГЛАВНОЙ ОПЕРАЦИИ / ФРЕЙМ ДАННЫХ</div>
+                <div style="background: var(--bg-card); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 20px;">
+                    <p style="margin-bottom: 10px;"><strong>Имя клиента:</strong> Иван Иванов</p>
+                    <p style="margin-bottom: 10px;"><strong>Услуга:</strong> Стрижка бороды</p>
+                    <p><strong>Телефон:</strong><br>
+                        <span style="display:inline-flex; align-items:center; gap:8px; background:var(--bg-elevated); padding:8px 12px; border-radius:var(--radius); border:1px solid var(--border); margin-top:5px; font-size:16px; color:var(--accent);">
+                            +7 (999) 123-45-67 <button class="btn btn-ghost btn-sm" style="margin:0; padding:4px 8px;"><i class="fa-solid fa-copy"></i></button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="actions-frame"><div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-bf-02')"><i class="fa-solid fa-arrow-left"></i> Закрыть</button></div></div>
+        </section>
+
+        <section class="wireframe-screen" id="screen-bf-04">
+            <div class="spec-block"><b>Название формы:</b> <span>Отзывы</span><br><b>Роль(-и):</b> <span>Владелец профиля, менеджер</span><br><b>Фрейм главной операции:</b> <span>Просмотр отзывов</span><br><b>Фрейм(-ы) других операций:</b> <span>Фильтрация, ответ на отзывы</span><br><b>Вызовы/Переходы/Отказы:</b> <span>Отказ: Назад -> BF-01</span><br><b>Фреймы данных:</b> <span>Список (Отзывы об этом мастере)</span></div>
+            <div class="ref-header"><span class="ref-type-badge id">BF-04</span><span class="ref-type-badge role">Роль: Владелец профиля</span><h1 class="ref-title">Отзывы</h1></div>
+            <div class="frame-box"><div class="ex05-label"><i class="fa-solid fa-sliders"></i> ФРЕЙМ ДРУГИХ ОПЕРАЦИЙ</div><div class="ops-row"><div class="form-label" style="margin:0;">Оценка:</div><select class="form-select" style="max-width: 200px; margin:0;"><option>Все</option></select></div></div>
+            <div class="list-frame">
+                <div class="list-frame-header"><div class="list-frame-title"><i class="fa-solid fa-list"></i> ФРЕЙМ ДАННЫХ: СПИСОК</div></div>
+                <div class="data-table">
+                    <tbody>
+                        <tr>
+                            <td style="width: 100px; color:var(--fg-dim)">12.03.2024</td>
+                            <td>
+                                <span class="star">★★★★★</span><br>Отличный мастер!
+                                <div style="margin-top:8px; font-size:12px; font-style:italic; color:var(--accent); background:var(--accent-dim); padding:8px; border-radius:4px; display:inline-block;">
+                                    <b>Ответ менеджера:</b> Спасибо!
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </div>
+            </div>
+            <div class="actions-frame"><div class="actions-group"><button class="btn btn-ghost" onclick="navigateTo('screen-bf-01')"><i class="fa-solid fa-arrow-left"></i> Назад</button></div></div>
+        </section>
+    </div>
+
+</main>
+
+<script>
+    function switchTab(event, tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+        const firstScreen = document.getElementById(tabId).querySelector('.wireframe-screen');
+        if(firstScreen) {
+            showOnlyScreen(firstScreen.id);
+            window.scrollTo({ top: firstScreen.offsetTop - 130, behavior: 'smooth' });
+        }
+    }
+
+    function navigateTo(screenId) {
+        const targetScreen = document.getElementById(screenId);
+        if (!targetScreen) return;
+        const parentTab = targetScreen.closest('.tab-content');
+        showOnlyScreen(screenId, parentTab);
+        window.scrollTo({ top: targetScreen.offsetTop - 130, behavior: 'smooth' });
+    }
+
+    function showOnlyScreen(activeId, parent) {
+        const container = parent || document;
+        container.querySelectorAll('.wireframe-screen').forEach(s => s.classList.remove('sub-active'));
+        document.getElementById(activeId).classList.add('sub-active');
+    }
+</script>
+
+</body>
+</html>
